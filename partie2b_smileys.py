@@ -70,46 +70,53 @@ def liste_images():
     return lst
 
 
-def cherche_image(k):
-    for i in range(1, 12):
-        if k == 2:
-            image = PhotoImage(file="./smileys/smiley" + str(i) + ".png")
-            return image
-        if k > 2 and k == 2 ** i:
-            image = PhotoImage(file="./smileys/smiley" + str(i) + ".png")
-            return image
+def dico_smiley():
+    lst = liste_images()
+    dico = {}
+    for i in range(1, 11):
+        k = 2 ** i
+        dico[k] = lst[i]
+    return dico
+    
+def test():
+    global canvas
+    img = PhotoImage(file="./smiley/smiley1.png")
+    canvas.create_image(50,50,image=img)
+    print("oui")
 
 
 def dessine_grille(g):
+    canvas.delete(ALL)
     n = len(g)
     cote = 70
+    dico = dico_smiley()
     x0, y0 = 50, 50
     images = liste_images()
+
     for i in range(n):
         for j in range(n):
             x = g[i][j]
-            # img = cherche_image(x)
-            img = PhotoImage(file="smileys/" + images[x] + ".png")
             coords_tuile = (x0 + cote * j,
                             y0 + cote * i,
                             x0 + cote * (j + 1),
                             y0 + cote * (i + 1))
             if x != 0:
+                img = PhotoImage(file="./smiley/smiley1.png")
                 if x > 64:
                     clr_text = "white"
                 else:
                     clr_text = "black"
                 clr = couleur(x)
                 canvas.create_image(x0 + cote * j,
-                                   y0 + cote * i,
+                                    y0 + cote * i,
                                     image=img)
-                # canvas.create_rectangle(coords_tuile, fill=clr, width=0)
-                # canvas.create_text(x0 + cote * j + cote / 2,
-                #                    y0 + cote * i + cote / 2,
-                #                    text=x, justify=CENTER, fill=clr_text,
-                #                    font=("Ubuntu", 20, "bold"))
+                canvas.create_rectangle(coords_tuile, fill=clr, width=0)
+                 canvas.create_text(x0 + cote * j + cote / 2,
+                                    y0 + cote * i + cote / 2,
+                                    text=x, justify=CENTER, fill=clr_text,
+                                    font=("Ubuntu", 20, "bold"))
             else:
-                canvas.create_rectangle(coords_tuile, fill="white", width=0)
+                canvas.create_rectangle(coords_tuile, fill="while", width=0)
     for i in range(n + 1):
         canvas.create_line(x0 + cote * i, y0, x0 + cote * i, y0 + n * cote,
                            width=3,
@@ -283,7 +290,7 @@ def clavier(event, g):
 
 # Widgets Tkinter #
 
-canvas = Canvas(jeu, height=n*100, width=n*100, bg="white")
+canvas = Canvas(jeu, height=n*100, width=n*100)
 canvas.grid(row=0, rowspan=3)
 
 bouton_jouer = Button(jeu, text="Jouer", command=lambda: partie(n))
@@ -296,4 +303,7 @@ texte_fin_partie.grid(row=1, column=1)
 bouton_quitter = Button(jeu, text="Quitter", command=quitter)
 bouton_quitter.grid(row=2, column=1)
 
+#img = PhotoImage(file="./smiley/smiley1.png")
+#canvas.create_image(50,50,image=img)
+test()
 jeu.mainloop()
